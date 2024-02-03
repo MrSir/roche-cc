@@ -5,7 +5,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class User(BaseModel):
+class UserSchema(BaseModel):
     id: int
     username: str
     password: str
@@ -19,7 +19,7 @@ class ProductSchema(BaseModel):
 
 class ShoppingCartSchema(BaseModel):
     id: int
-    user: User
+    user: UserSchema
     expires_at: datetime
 
 

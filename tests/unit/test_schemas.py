@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from pydantic import BaseModel
 
-from api.schemas import ItemBaseSchema, User, ProductSchema, ShoppingCartSchema, ItemCreateSchema, ItemUpdateSchema, ItemSchema
+from api.schemas import ItemBaseSchema, UserSchema, ProductSchema, ShoppingCartSchema, ItemCreateSchema, ItemUpdateSchema, ItemSchema
 
 
 class UserUnitTest(TestCase):
@@ -12,7 +12,7 @@ class UserUnitTest(TestCase):
         username = 'Mitko'
         password = 'TopSecretP@55'
 
-        schema = User(id=identifier, username=username, password=password)
+        schema = UserSchema(id=identifier, username=username, password=password)
         self.assertIsInstance(schema, BaseModel)
         self.assertEqual(identifier, schema.id)
         self.assertEqual(username, schema.username)
@@ -35,7 +35,7 @@ class ProductUnitTest(TestCase):
 class ShoppingCartUnitTest(TestCase):
     def test_init(self) -> None:
         identifier = 1
-        user = User(id=1, username='Mitko', password='TopSecretP@55')
+        user = UserSchema(id=1, username='Mitko', password='TopSecretP@55')
         expires_at = datetime(2024, 2, 1, 12, 34, 56)
 
         schema = ShoppingCartSchema(id=identifier, user=user, expires_at=expires_at)
