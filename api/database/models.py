@@ -46,5 +46,3 @@ class Item(Base):
 
     shopping_cart = relationship('ShoppingCart', back_populates='items')
     product = relationship('Product')
-
-Base.metadata.create_all(engine)
