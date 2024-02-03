@@ -18,14 +18,14 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
         self.router.add_api_route("/items", self.create, methods=["POST"])
 
         # Bonus
-        self.router.add_api_route("/items/{item_id}", self.update, methods=["PUT"])
+        self.router.add_api_route("/items/{item_id}", self.partial_update, methods=["PATCH"])
         self.router.add_api_route("/items/{item_id}", self.delete, methods=["DELETE"])
 
         super().__init__()
 
         self.shopping_cart_service = ShoppingCartService(self.user, self.db_session)
 
-    def index(self) -> list[schemas.Item]:
+    def index(self) -> list[schemas.ItemSchema]:
         self.authorized_to('index_items')
 
         return (
@@ -35,7 +35,7 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
                 .filter(models.Item.quantity != 0)
         )
 
-    def create(self, schema: schemas.ItemCreate) -> schemas.Item:
+    def create(self, schema: schemas.ItemCreateSchema) -> schemas.ItemSchema:
         self.authorized_to('create_item').validate(CreateItemValidator(schema))
 
         product_id = schema.product_id
@@ -50,7 +50,7 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
         return item
 
     #### Bonus ####
-    def update(self, item_id: int, schema: schemas.ItemUpdate) -> schemas.Item | None:
+    def partial_update(self, item_id: int, schema: schemas.ItemUpdateSchema) -> schemas.ItemSchema | None:
         self.authorized_to('update_item').validate(UpdateItemValidator(schema))
 
         return self.shopping_cart_service.update_quantity(self.get_object(item_id), schema.quantity)

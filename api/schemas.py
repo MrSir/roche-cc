@@ -11,36 +11,36 @@ class User(BaseModel):
     password: str
 
 
-class Product(BaseModel):
+class ProductSchema(BaseModel):
     id: int
     name: str
     price: float
 
 
-class ShoppingCart(BaseModel):
+class ShoppingCartSchema(BaseModel):
     id: int
     user: User
     expires_at: datetime
 
 
-class ItemBase(BaseModel):
+class ItemBaseSchema(BaseModel):
     pass
 
 
-class ItemCreate(ItemBase):
+class ItemCreateSchema(ItemBaseSchema):
     product_id: int | None = None
     product_name: str | None = None
     quantity: int | None = 1
 
 
-class ItemUpdate(ItemBase):
+class ItemUpdateSchema(ItemBaseSchema):
     quantity: int
 
 
-class Item(ItemBase):
+class ItemSchema(ItemBaseSchema):
     id: int
     shopping_cart_id: int
-    product: Product
+    product: ProductSchema
     quantity: int
     reservation_identifier: str | None = None
 
