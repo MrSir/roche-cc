@@ -8,6 +8,10 @@ class ObjectNotFoundError(Exception):
         super().__init__(*args)
 
 
+class UnauthorizedError(Exception):
+    pass
+
+
 class RequestValidationError(ValueError):
     def __init__(self, message: str | None = None, *args):
         self.message = message

@@ -10,8 +10,12 @@ from api.jobs.base_jobs import Job
 class BaseItemJob(Job):
     def __init__(self, item_id: int):
         self.item_id = item_id
-        self.db_session = DBSession
+        self.db_session = DBSession()
         self._item: Item | None = None
+
+    def queue(self) -> None:
+        """Put's the current task onto the configured queue for processing asynchronously"""
+        pass
 
     @cached_property
     def item(self) -> Item:
