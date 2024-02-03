@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+from api.exceptions import NullableValidationError
 from api.validation.base_rules import Rule
 
 
@@ -13,4 +14,11 @@ class Validator:
     def validate(self) -> None:
         for path, rules in self.rules().items():
             for rule in rules:
-                rule.validate(self.schema)
+                rule.path = path
+                rule.schema = self.schema
+
+                try:
+                    rule.validate()
+                except NullableValidationError:
+                    # If the value is null and has a nullable rule in front it should skip the rest of the rules
+                    break
