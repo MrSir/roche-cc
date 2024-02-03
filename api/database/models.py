@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DECIMAL, DateTime
 from sqlalchemy.orm import relationship
 
-from api.database.configuration import Base
+from api.database.configuration import Base, engine
 
 
 class User(Base):
@@ -46,3 +46,5 @@ class Item(Base):
 
     shopping_cart = relationship('ShoppingCart', back_populates='items')
     product = relationship('Product')
+
+Base.metadata.create_all(engine)

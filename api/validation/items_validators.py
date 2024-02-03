@@ -10,7 +10,7 @@ class CreateItemValidator(Validator):
             'product_id': [
                 RequiredIfRule(self.schema.product_name is None),
                 IntegerRule(),
-                ExistsInRule(Product, 'id')
+                ExistsInRule(Product)
             ],
             'product_name': [
                 RequiredIfRule(self.schema.product_id is None),

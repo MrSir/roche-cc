@@ -1,10 +1,22 @@
+from __future__ import annotations
+
+
 class ObjectNotFoundError(Exception):
-    pass
+    def __init__(self, message: str | None = None, *args):
+        self.message = message
+
+        super().__init__(*args)
 
 
 class RequestValidationError(ValueError):
-    pass
+    def __init__(self, message: str | None = None, *args):
+        self.message = message
+
+        super().__init__(*args)
 
 
 class NullableValidationError(ValueError):
-    pass
+    def __init__(self, message: str | None = None, *args):
+        self.message = message
+
+        super().__init__(*args)

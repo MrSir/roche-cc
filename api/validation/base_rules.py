@@ -5,7 +5,8 @@ from typing import Any, Type
 
 from pydantic import BaseModel
 
-from api.database.configuration import DBSession, Base
+from api.database.configuration import Base, DBSession
+
 from api.exceptions import RequestValidationError, NullableValidationError
 
 
@@ -26,7 +27,7 @@ class Rule:
 
 class RequiredRule(Rule):
     def validate(self) -> bool:
-        if self.value() is None:
+        if self.value is None:
             self.fail()
 
         return True
@@ -92,18 +93,25 @@ class StringRule(Rule):
 
 
 class ExistsInRule(Rule):
-    def __init__(self, model: Type[Base], column: str):
+    def __init__(self, model: Type[Base], column: str = 'id'):
         self.model = model
         self.column = column
 
         super().__init__()
 
+    def db_session(self) -> DBSession:
+        return DBSession()
+
     def validate(self) -> bool:
-        db_session = DBSession
+        db_session = self.db_session()
 
-        result = db_session.query(self.model).filter({self.column: self.value}).exists().scalar()
+        result = (
+            db_session.query(
+                db_session.query(self.model).filter(self.column == self.value).exists()
+            ).scalar()
+        )
 
-        if result is None:
+        if result is False:
             self.fail()
 
         return True
@@ -121,6 +129,9 @@ class GreaterThanRule(Rule):
         super().__init__()
 
     def validate(self) -> bool:
+        if self.value < self.min_value:
+            self.fail()
+
         return True
 
     def fail(self) -> None:
