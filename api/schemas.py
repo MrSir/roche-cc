@@ -24,18 +24,25 @@ class ShoppingCart(BaseModel):
 
 
 class ItemBase(BaseModel):
-    quantity: int
+    pass
 
 
 class ItemCreate(ItemBase):
-    product_id: int
+    product_id: int | None = None
+    product_name: str | None = None
+    quantity: int | None = 1
+
+
+class ItemUpdate(ItemBase):
+    quantity: int
 
 
 class Item(ItemBase):
     id: int
     shopping_cart_id: int
     product: Product
-    reserve_identifier: str | None = None
+    quantity: int
+    reservation_identifier: str | None = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
