@@ -133,42 +133,48 @@ architecture in the actual review.
 
 ### Tests
 
-The code challenge has 88 tests. The bulk of them are unit tests (81), and the remaining integration tests (7). Code
+The code challenge has 89 tests. The bulk of them are unit tests (82), and the remaining integration tests (7). Code
 coverage is a number I take with a grain of salt. One could write a single e2e test and get 80% code coverage. This
 doesn't mean the code is tested in my eyes. If you have 100% code coverage on the other hand and the entirety of the
-test suite is unit tests, then your system is an a bit of better state, but your business logic and how everything plays
+test suite is unit tests, then your system is in a bit of better state, but your business logic and how everything plays
 together is completely untested. So my rule of thumb is to always first unit test everything, then add integration
-tests, and then e2e tests.
+tests, and then e2e tests. Unfortunately here I didn't have the time to really dig into the DB configurations for E2E 
+testing, so there isn't any e2e tests implemented. That being said I did try the api using the swagger documentation, 
+and things do work as intended. 
 
 ## What's Missing
 
 - Authentication layer for the API is something I didn't bother spending time on. It wasn't mentioned in the
   requirements, and I figured it is assumed that ANY API would have an authentication layer built for it. So while this
-  component is missing, it should absolutely exist in a production setup
+  component is missing, it should absolutely exist in a production setup. In the `AuthenticatedController.user` you will
+  find the placeholder for where that code should go. At this time I am just querying the first user in the DB and using
+  it.
 - Authorization layer for the API was also something that was skipped. I did lay some of the contract work (
   e.g. `authorized_to(...)`) to imply that such a piece must also be implemented. In my opinion each API endpoint must
   perform proper authorization checks for the authenticated user. Just because you are authenticated doesn't mean you
   can perform a certain action.
 - Exception handling and formatting is not implemented. The custom exceptions I have added all need to be handled by a
-  wrapper mechanism and formatter accordingly for the responses to make sense.
+  wrapper mechanism and formatter accordingly for the responses to make sense. Because of this any the custom errors 
+  will still come back as Internal Server Errors.
 - The queueing and worker background processing mechanisms are not implemented. While the Job classes are in place and
   partially tested, there is nothing in place to actually schedule these and then process them. In a production
   environment one would likely have something like Celery with a Redis queue up and running for crunching through these.
 - While I did add support for an SQLite database, and have provided some testing for the db operations code, it is
   mostly mocked. The db operations are not the most stylish or performant, and are there just to illustrate what needs
-  to be done.
+  to be done. Testing the API manually does indeed show the code works and data is persisted.
 - Any cron mechanisms and jobs to clear expired ShoppingCarts are not implemented. In a real world shopping cart
-  implementation these would be key for maintaining product stock levels.
+  implementation, these would be key for maintaining product stock levels.
 - While the automatic API Documentation does use the Schema classes to describe the response payloads, I haven't
-  actually implemented the proper formatting part of the responses.
+  actually implemented anything in the form of response formatting. It currently fully relies on what FastAPI provides
+  out of the box.
 - I didn't have enough time to fully setup the whole architecture in order to truly run some E2E tests for the API
-  endpoints. If I did have time on a per api endpoint there would have been a number of e2e tests covering the full
-  spectrum of functionality. Tests like:
+  endpoints. The test db configurations were a little more complex than I had time for. If I did have time on a per api 
+  endpoint there would have been a number of e2e tests covering the full spectrum of functionality. Tests like:
     - authentication layer tests
     - authorization layer tests
     - validation layer tests, for each rule
     - success/happy path tests
-    - alternative success cases (e.g. creating an item with a product_id vs product_name)
+    - alternative success cases (e.g. creating an item with a product_id vs product_name, creating an item for a product already in the cart)
 
 ## Bonus
 
