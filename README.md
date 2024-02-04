@@ -67,7 +67,7 @@ erDiagram
     }
     User ||--o| ShoppingCart : hasOne
     ShoppingCart ||--|{ Item : hasMany
-    Item }|--|| Product : hasOne
+    Item }o--|| Product : hasOne
 ```
 
 ### Structure
