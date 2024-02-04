@@ -28,13 +28,17 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
     def index(self) -> list[ItemSchema]:
         self.authorized_to('index_items')
 
-        return (
+        items = (
             self.db_session
                 .query(Item)
                 .join(ShoppingCart)
                 .filter(ShoppingCart.user_id == self.user.id)
                 .filter(Item.quantity != 0)
         )
+
+        # TODO: implement proper formatting for response
+
+        return items
 
     def create(self, schema: ItemCreateSchema) -> ItemSchema:
         self.authorized_to('create_item').validate(CreateItemValidator(schema))
@@ -48,16 +52,25 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
 
         item = self.shopping_cart_service.add_item(product_id, schema.quantity)
 
+        # TODO: implement proper formatting for response
+
         return item
 
     #### Bonus ####
     def partial_update(self, item_id: int, schema: ItemPartialUpdateSchema) -> ItemSchema | None:
         self.authorized_to('update_item').validate(PartialUpdateItemValidator(schema))
 
-        return self.shopping_cart_service.update_quantity(self.get_object(item_id), schema.quantity)
+        item = self.shopping_cart_service.update_quantity(self.get_object(item_id), schema.quantity)
+
+        # TODO: implement proper formatting for response
+
+        return item
 
     def delete(self, item_id: int) -> None:
         self.authorized_to('delete_item')
 
-        return self.shopping_cart_service.update_quantity(self.get_object(item_id), 0)
+        item = self.shopping_cart_service.update_quantity(self.get_object(item_id), 0)
 
+        # TODO: implement proper formatting for response
+
+        return item

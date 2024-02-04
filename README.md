@@ -91,6 +91,7 @@ The code challenge has 88 tests. The bulk of them are unit tests (81), and the r
 - The queueing and worker background processing mechanisms are not implemented. While the Job classes are in place and partially tested, there is nothing in place to actually schedule these and then process them. In a production environment one would likely have something like Celery with a Redis queue up and running for crunching through these.
 - While I did add support for an SQLite database, and have provided some testing for the db operations code, it is mostly mocked. The db operations are not the most stylish or performant, and are there just to illustrate what needs to be done.
 - Any cron mechanisms and jobs to clear expired ShoppingCarts are not implemented. In a real world shopping cart implementation these would be key for maintaining product stock levels.
+- While the automatic API Documentation does use the Schema classes to describe the response payloads, I haven't actually implemented the proper formatting part of the responses.
 - I didn't have enough time to fully setup the whole architecture in order to truly run some E2E tests for the API endpoints. If I did have time on a per api endpoint there would have been a number of e2e tests covering the full spectrum of functionality. Tests like:
   - authentication layer tests
   - authorization layer tests
