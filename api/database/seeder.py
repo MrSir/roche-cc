@@ -2,7 +2,6 @@
 INITIAL_DATA = {
       'users': [
             {
-                  'username': 'superuser',
                   'email': 'mitkomtoshev@gmail.com',
                   'hashed_password': 'Test1234_abkjsdjfak',
                   'is_active': True
