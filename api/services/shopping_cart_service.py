@@ -20,23 +20,30 @@ class ShoppingCartService:
 
         return self._shopping_cart
 
+    def new_expiry(self) -> arrow:
+        return arrow.now().shift(minutes=30)
+
     def create_shopping_cart(self) -> ShoppingCart:
-        shopping_cart = ShoppingCart(user=self.user, expires_at=arrow.now().shift(minutes=30))
+        shopping_cart = ShoppingCart(user=self.user, expires_at=self.new_expiry())
         self.db_session.add(shopping_cart)
         self.db_session.commit()
         self.db_session.refresh(shopping_cart)
 
         return shopping_cart
 
-    def increase_expiry_of_shopping_cart(self) -> ShoppingCart:
+    def delete_shopping_cart(self) -> None:
+        self.db_session.delete(self.shopping_cart)
+        self.db_session.commit()
+
+        self._shopping_cart = None
+
+    def increase_expiry_of_shopping_cart(self) -> None:
         self.db_session.query(ShoppingCart).filter(ShoppingCart.id == self.shopping_cart.id).update({
-            ShoppingCart.expires_at: arrow.now().shift(minutes=30)
+            ShoppingCart.expires_at: self.new_expiry()
         })
 
         self.db_session.commit()
         self.db_session.refresh(self._shopping_cart)
-
-        return self.shopping_cart
 
     def add_item(self, product_id: int, quantity: int) -> Item:
         item = Item(shopping_cart=self.shopping_cart, product_id=product_id, quantity=quantity)
