@@ -2,6 +2,8 @@
 
 ## Installation & Setup
 
+The code requires python v3.11.
+
 Run the following commands in order to configure the project:
 
 `pip install -r requirements.txt` - to install the dependencies for the project
