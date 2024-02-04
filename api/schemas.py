@@ -33,7 +33,7 @@ class ItemCreateSchema(ItemBaseSchema):
     quantity: int | None = 1
 
 
-class ItemUpdateSchema(ItemBaseSchema):
+class ItemPartialUpdateSchema(ItemBaseSchema):
     quantity: int
 
 

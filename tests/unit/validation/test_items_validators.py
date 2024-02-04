@@ -3,11 +3,11 @@ from __future__ import annotations
 from unittest import TestCase
 
 from api.database.models import Product
-from api.schemas import ItemCreateSchema, ItemUpdateSchema
+from api.schemas import ItemCreateSchema, ItemPartialUpdateSchema
 from api.validation.base_rules import RequiredIfRule, NullableRule, IntegerRule, ExistsInRule, StringRule, \
     GreaterThanRule, RequiredRule
 from api.validation.base_validators import Validator
-from api.validation.items_validators import CreateItemValidator, UpdateItemValidator
+from api.validation.items_validators import CreateItemValidator, PartialUpdateItemValidator
 
 
 class CreateItemValidatorUnitTest(TestCase):
@@ -45,16 +45,16 @@ class CreateItemValidatorUnitTest(TestCase):
         self.assertEqual(0, getattr(validator.rules()['quantity'][2], 'min_value'))
 
 
-class UpdateItemValidatorUnitTest(TestCase):
+class PartialUpdateItemValidatorUnitTest(TestCase):
     def test_init(self) -> None:
-        schema = ItemUpdateSchema(quantity=2)
-        validator = UpdateItemValidator(schema)
+        schema = ItemPartialUpdateSchema(quantity=2)
+        validator = PartialUpdateItemValidator(schema)
 
         self.assertIsInstance(validator, Validator)
 
     def test_rules(self) -> None:
-        schema = ItemUpdateSchema(quantity=2)
-        validator = UpdateItemValidator(schema)
+        schema = ItemPartialUpdateSchema(quantity=2)
+        validator = PartialUpdateItemValidator(schema)
 
         self.assertIn('quantity', validator.rules())
         self.assertEqual(2, len(validator.rules()['quantity']))

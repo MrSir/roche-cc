@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from pydantic import BaseModel
 
-from api.schemas import ItemBaseSchema, UserSchema, ProductSchema, ShoppingCartSchema, ItemCreateSchema, ItemUpdateSchema, ItemSchema
+from api.schemas import ItemBaseSchema, UserSchema, ProductSchema, ShoppingCartSchema, ItemCreateSchema, ItemPartialUpdateSchema, ItemSchema
 
 
 class UserUnitTest(TestCase):
@@ -78,7 +78,7 @@ class ItemUpdateUnitTest(TestCase):
     def test_init(self) -> None:
         quantity = 13
 
-        schema = ItemUpdateSchema(quantity=quantity)
+        schema = ItemPartialUpdateSchema(quantity=quantity)
         self.assertIsInstance(schema, ItemBaseSchema)
         self.assertEqual(quantity, schema.quantity)
 

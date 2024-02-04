@@ -25,7 +25,7 @@ class CreateItemValidator(Validator):
         }
 
 
-class UpdateItemValidator(Validator):
+class PartialUpdateItemValidator(Validator):
     def rules(self) -> dict[str, list[Rule]]:
         return {
             'quantity': [

@@ -12,10 +12,15 @@ from api.validation.base_validators import Validator
 
 
 class AuthenticatedController:
-    @cached_property
+    _user: User | None = None
+
+    @property
     def user(self) -> User:
-        # resolves the authenticated user from the request
-        pass
+        if self._user is None:
+            # TODO: resolves the authenticated user from the request
+            self._user = User(id=1)
+
+        return self._user
 
 
 class AuthorizedController(AuthenticatedController):

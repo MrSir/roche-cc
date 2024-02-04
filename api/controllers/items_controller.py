@@ -4,9 +4,9 @@ from fastapi import APIRouter
 
 from api.controllers.base_controllers import AuthorizedController, ValidatedController, ResourcefulController
 from api.database.models import Item, ShoppingCart, Product
-from api.schemas import ItemSchema, ItemCreateSchema, ItemUpdateSchema
+from api.schemas import ItemSchema, ItemCreateSchema, ItemPartialUpdateSchema
 from api.services.shopping_cart_service import ShoppingCartService
-from api.validation.items_validators import UpdateItemValidator, CreateItemValidator
+from api.validation.items_validators import PartialUpdateItemValidator, CreateItemValidator
 
 
 class ItemsController(AuthorizedController, ValidatedController, ResourcefulController):
@@ -44,15 +44,15 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
         # Resolve product_id if not provided
         if product_id is None:
             product = self.db_session.query(Product).filter(Product.name == schema.product_name).first()
-            product_id = product.product_id
+            product_id = product.id
 
         item = self.shopping_cart_service.add_item(product_id, schema.quantity)
 
         return item
 
     #### Bonus ####
-    def partial_update(self, item_id: int, schema: ItemUpdateSchema) -> ItemSchema | None:
-        self.authorized_to('update_item').validate(UpdateItemValidator(schema))
+    def partial_update(self, item_id: int, schema: ItemPartialUpdateSchema) -> ItemSchema | None:
+        self.authorized_to('update_item').validate(PartialUpdateItemValidator(schema))
 
         return self.shopping_cart_service.update_quantity(self.get_object(item_id), schema.quantity)
 
