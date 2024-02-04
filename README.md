@@ -7,7 +7,8 @@ Run the following commands in order to configure the project:
 `pip install -r requirements.txt` - to install the dependencies for the project
 
 `uvicorn main:app --reload` - to start the FastAPI server so that you can view the documentation. Note that starting the
-server will also run create all the tables for the models inside the `roche_cc.db` SQLite file.
+server will also create all the tables for the models inside the `roche_cc.db` SQLite file, and seed some records to 
+allow for some manual testing.
 
 The API documentation can be access at `http://127.0.0.1:8000/docs`
 
