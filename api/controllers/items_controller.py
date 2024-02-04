@@ -69,8 +69,6 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
     def delete(self, item_id: int) -> None:
         self.authorized_to('delete_item')
 
-        item = self.shopping_cart_service.update_quantity(self.get_object(item_id), 0)
+        self.shopping_cart_service.update_quantity(self.get_object(item_id), 0)
 
         # TODO: implement proper formatting for response
-
-        return item

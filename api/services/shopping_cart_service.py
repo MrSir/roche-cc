@@ -24,7 +24,8 @@ class ShoppingCartService:
         return arrow.now().shift(minutes=30)
 
     def create_shopping_cart(self) -> ShoppingCart:
-        shopping_cart = ShoppingCart(user=self.user, expires_at=self.new_expiry())
+        # TODO: find a shopping cart if one exists for the user
+        shopping_cart = ShoppingCart(user=self.user, expires_at=self.new_expiry().datetime)
         self.db_session.add(shopping_cart)
         self.db_session.commit()
         self.db_session.refresh(shopping_cart)
@@ -39,13 +40,15 @@ class ShoppingCartService:
 
     def increase_expiry_of_shopping_cart(self) -> None:
         self.db_session.query(ShoppingCart).filter(ShoppingCart.id == self.shopping_cart.id).update({
-            ShoppingCart.expires_at: self.new_expiry()
+            ShoppingCart.expires_at: self.new_expiry().datetime
         })
 
         self.db_session.commit()
         self.db_session.refresh(self._shopping_cart)
 
     def add_item(self, product_id: int, quantity: int) -> Item:
+        # TODO: check if item for this product already exists and update quantity instead
+
         item = Item(shopping_cart=self.shopping_cart, product_id=product_id, quantity=quantity)
         self.db_session.add(item)
         self.db_session.commit()

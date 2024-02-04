@@ -18,7 +18,8 @@ class AuthenticatedController:
     def user(self) -> User:
         if self._user is None:
             # TODO: resolves the authenticated user from the request
-            self._user = User(id=1)
+            self._user = self.db_session.query(User).filter(User.id == 1).first()
+            # self._user =
 
         return self._user
 
