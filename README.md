@@ -31,23 +31,20 @@ The code is organized into modules that clearly describe what is contained withi
 title: Entity Relationship Diagram
 ---
 erDiagram
+    User ||--0| ShoppingCart : hasOne
     User {
         int id
         string email
         string hashed_password
         bool is_active
     }
-    Product {
-        int id
-        string name
-        bool is_active
-        decimal price
-    }
+    ShoppingCart ||--0{ Item : hasMany
     ShoppingCart {
         int id
         int user_id
         datetime expires_at
     }
+    Item ||--|| Product : hasOne
     Item {
         int id
         int shopping_cart_id
@@ -55,9 +52,12 @@ erDiagram
         int quantity
         string reservation_identifier
     }
-    User ||--0| ShoppingCart : hasOne
-    ShoppingCart ||--0{ Item : hasMany
-    Item ||--|| Product : hasOne
+    Product {
+        int id
+        string name
+        bool is_active
+        decimal price
+    }
     
 ```
 
