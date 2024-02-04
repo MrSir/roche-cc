@@ -8,23 +8,34 @@ from api.jobs.reservation_jobs import ReserveItemJob, ReleaseReservedItemJob
 
 
 class ShoppingCartService:
-    def __init__(self, user: User, db_session: Session):
-        self.user: User = user
+    user: User
+
+    def __init__(self, db_session: Session):
         self.db_session: Session = db_session
         self._shopping_cart: ShoppingCart | None = None
+
+    def for_user(self, user: User) -> ShoppingCartService:
+        self.user = user
+
+        return self
 
     @property
     def shopping_cart(self) -> ShoppingCart:
         if self._shopping_cart is None:
-            self._shopping_cart = self.create_shopping_cart()
+            self._shopping_cart = self.find_shopping_cart()
+
+            if self._shopping_cart is None:
+                self._shopping_cart = self.create_shopping_cart()
 
         return self._shopping_cart
 
     def new_expiry(self) -> arrow:
         return arrow.now().shift(minutes=30)
+    
+    def find_shopping_cart(self) -> ShoppingCart:
+        return self.db_session.query(ShoppingCart).filter(ShoppingCart.user == self.user).first()
 
     def create_shopping_cart(self) -> ShoppingCart:
-        # TODO: find a shopping cart if one exists for the user
         shopping_cart = ShoppingCart(user=self.user, expires_at=self.new_expiry().datetime)
         self.db_session.add(shopping_cart)
         self.db_session.commit()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter
+from sqlalchemy.orm import Session
 
 from api.controllers.base_controllers import AuthorizedController, ValidatedController, ResourcefulController
 from api.database.models import Item, ShoppingCart, Product
@@ -12,7 +13,8 @@ from api.validation.items_validators import PartialUpdateItemValidator, CreateIt
 class ItemsController(AuthorizedController, ValidatedController, ResourcefulController):
     model_class = Item
 
-    def __init__(self):
+    def __init__(self, db_session: Session):
+        self.db_session = db_session
         self.router = APIRouter(tags=['Items'])
         self.router.add_api_route("/items", self.index, methods=["GET"])
         self.router.add_api_route("/items", self.create, methods=["POST"])
@@ -23,7 +25,7 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
 
         super().__init__()
 
-        self.shopping_cart_service = ShoppingCartService(self.user, self.db_session)
+        self.shopping_cart_service = ShoppingCartService(self.db_session)
 
     def index(self) -> list[ItemSchema]:
         self.authorized_to('index_items')
@@ -50,7 +52,7 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
             product = self.db_session.query(Product).filter(Product.name == schema.product_name).first()
             product_id = product.id
 
-        item = self.shopping_cart_service.add_item(product_id, schema.quantity)
+        item = self.shopping_cart_service.for_user(self.user).add_item(product_id, schema.quantity)
 
         # TODO: implement proper formatting for response
 
@@ -60,7 +62,7 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
     def partial_update(self, item_id: int, schema: ItemPartialUpdateSchema) -> ItemSchema | None:
         self.authorized_to('update_item').validate(PartialUpdateItemValidator(schema))
 
-        item = self.shopping_cart_service.update_quantity(self.get_object(item_id), schema.quantity)
+        item = self.shopping_cart_service.for_user(self.user).update_quantity(self.get_object(item_id), schema.quantity)
 
         # TODO: implement proper formatting for response
 
@@ -69,6 +71,6 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
     def delete(self, item_id: int) -> None:
         self.authorized_to('delete_item')
 
-        self.shopping_cart_service.update_quantity(self.get_object(item_id), 0)
+        self.shopping_cart_service.for_user(self.user).remove_item(self.get_object(item_id))
 
         # TODO: implement proper formatting for response

@@ -1,22 +1,29 @@
 from fastapi import FastAPI
+from sqlalchemy import event
 
 from api.controllers.items_controller import ItemsController
-from api.database.configuration import Base, engine
-from api.database.models import User, Product
+from api.database.configuration import engine, DBSession
+from api.database.models import User, Base, Product
+from api.database.seeder import seed_table
 
-Base.metadata.create_all(engine)
-
-# Seed some data
-Product(id=1, name='Computer', is_active=True, price=1500.00)
-Product(id=2, name='Monitor', is_active=True, price=500.00)
-
-User(id=1, email='mitkomtoshev@gmail.com', hashed_password='Test1234ngjkdgndfgj', is_active=True)
+event.listen(User.__table__, 'after_create', seed_table)
+event.listen(Product.__table__, 'after_create', seed_table)
 
 app = FastAPI()
 
-items_controller = ItemsController()
-
+items_controller = ItemsController(DBSession())
 app.include_router(items_controller.router)
+
+@app.on_event("startup")
+def configure():
+    Base.metadata.create_all(bind=engine)
+
+
+
+
+
+
+
 
 
 

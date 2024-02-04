@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import Self, Type
 
-from sqlalchemy.orm import Session
-
-from api.database.configuration import Base, DBSession
+from api.database.configuration import Base
 from api.database.models import User
 from api.exceptions import ObjectNotFoundError
 from api.validation.base_validators import Validator
@@ -44,13 +42,6 @@ class ValidatedController:
 
 class ResourcefulController:
     model_class: Type[Base]
-
-    def __init__(self):
-        self._db_session: Session = DBSession()
-
-    @property
-    def db_session(self) -> Session:
-        return self._db_session
 
     def get_object(self, identifier: int) -> Base:
         object_instance = self.db_session.query(self.model_class).filter(self.model_class.id == identifier).first()
