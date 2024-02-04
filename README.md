@@ -31,13 +31,34 @@ The code is organized into modules that clearly describe what is contained withi
 title: Entity Relationship Diagram
 ---
 erDiagram
-    User ||--|| ShoppingCart : has
     User {
         int id
         string email
         string hashed_password
         bool is_active
     }
+    Product {
+        int id
+        string name
+        bool is_active
+        decimal price
+    }
+    ShoppingCart {
+        int id
+        int user_id
+        datetime expires_at
+    }
+    Item {
+        int id
+        int shopping_cart_id
+        int product_id
+        int quantity
+        string reservation_identifier
+    }
+    User ||--0| ShoppingCart : hasOne
+    ShoppingCart ||--0{ Item : hasMany
+    Item ||--|| Product : hasOne
+    
 ```
 
 ## Mechanisms NOT Implemented
