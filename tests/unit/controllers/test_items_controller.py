@@ -5,16 +5,21 @@ from fastapi.routing import APIRoute
 
 from api.controllers.base_controllers import AuthorizedController, ValidatedController, ResourcefulController
 from api.controllers.items_controller import ItemsController
+from api.database.configuration import DBSession
 from api.services.shopping_cart_service import ShoppingCartService
 
 
 class ItemsControllerUnitTest(TestCase):
     def test_init(self) -> None:
-        controller = ItemsController()
+        db_session = DBSession()
+        controller = ItemsController(db_session)
 
         self.assertIsInstance(controller, AuthorizedController)
         self.assertIsInstance(controller, ValidatedController)
         self.assertIsInstance(controller, ResourcefulController)
+
+        self.assertEqual(db_session, controller.db_session)
+        self.assertIsInstance(controller.shopping_cart_service, ShoppingCartService)
 
         self.assertIsInstance(controller.router, APIRouter)
         self.assertEqual(['Items'], controller.router.tags)
@@ -36,5 +41,3 @@ class ItemsControllerUnitTest(TestCase):
         self.assertEqual('/items/{item_id}', controller.router.routes[3].path)
         self.assertEqual('delete', controller.router.routes[3].name)
         self.assertEqual({'DELETE'}, controller.router.routes[3].methods)
-
-        self.assertIsInstance(controller.shopping_cart_service, ShoppingCartService)

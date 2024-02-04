@@ -15,6 +15,8 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
 
     def __init__(self, db_session: Session):
         self.db_session = db_session
+        self.shopping_cart_service = ShoppingCartService(self.db_session)
+
         self.router = APIRouter(tags=['Items'])
         self.router.add_api_route("/items", self.index, methods=["GET"])
         self.router.add_api_route("/items", self.create, methods=["POST"])
@@ -22,10 +24,6 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
         # Bonus
         self.router.add_api_route("/items/{item_id}", self.partial_update, methods=["PATCH"])
         self.router.add_api_route("/items/{item_id}", self.delete, methods=["DELETE"])
-
-        super().__init__()
-
-        self.shopping_cart_service = ShoppingCartService(self.db_session)
 
     def index(self) -> list[ItemSchema]:
         self.authorized_to('index_items')
@@ -37,8 +35,6 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
                 .filter(ShoppingCart.user_id == self.user.id)
                 .filter(Item.quantity != 0)
         )
-
-        # TODO: implement proper formatting for response
 
         return items
 
@@ -54,8 +50,6 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
 
         item = self.shopping_cart_service.for_user(self.user).add_item(product_id, schema.quantity)
 
-        # TODO: implement proper formatting for response
-
         return item
 
     #### Bonus ####
@@ -64,13 +58,9 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
 
         item = self.shopping_cart_service.for_user(self.user).update_quantity(self.get_object(item_id), schema.quantity)
 
-        # TODO: implement proper formatting for response
-
         return item
 
     def delete(self, item_id: int) -> None:
         self.authorized_to('delete_item')
 
         self.shopping_cart_service.for_user(self.user).remove_item(self.get_object(item_id))
-
-        # TODO: implement proper formatting for response
