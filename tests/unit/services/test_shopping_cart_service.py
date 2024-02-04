@@ -137,9 +137,9 @@ class ShoppingCartServiceUnitTest(TestCase):
         service._shopping_cart = shopping_cart
 
         with patch.multiple(
-            service,
-            increase_expiry_of_shopping_cart=MagicMock(return_value=None),
-            new_expiry=MagicMock(return_value=expires_at)
+                service,
+                increase_expiry_of_shopping_cart=MagicMock(return_value=None),
+                new_expiry=MagicMock(return_value=expires_at)
         ) as mocks:
             self.assertIsInstance(service.add_item(product_id, quantity), Item)
 

@@ -6,7 +6,6 @@ from typing import Any, Type
 from pydantic import BaseModel
 
 from api.database.configuration import Base, DBSession
-
 from api.exceptions import RequestValidationError, NullableValidationError
 
 

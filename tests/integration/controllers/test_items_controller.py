@@ -4,7 +4,6 @@ from unittest.mock import patch, MagicMock, PropertyMock
 from api.controllers.items_controller import ItemsController
 from api.database.models import User, Item, ShoppingCart, Product
 from api.schemas import ItemCreateSchema, ItemPartialUpdateSchema
-from api.validation.items_validators import CreateItemValidator
 
 
 class ItemsControllerIntegrationTest(TestCase):
@@ -43,9 +42,9 @@ class ItemsControllerIntegrationTest(TestCase):
         mock_shopping_cart_service.add_item = MagicMock(return_value=item)
 
         with patch.multiple(
-            controller,
-            authorized_to=mock_authorized_to,
-            shopping_cart_service=mock_shopping_cart_service
+                controller,
+                authorized_to=mock_authorized_to,
+                shopping_cart_service=mock_shopping_cart_service
         ) as mocks:
             self.assertEqual(item, controller.create(schema))
 
@@ -75,9 +74,9 @@ class ItemsControllerIntegrationTest(TestCase):
         mock_db_session.query = MagicMock(return_value=mock_query)
 
         with patch.multiple(
-            controller,
-            authorized_to=mock_authorized_to,
-            shopping_cart_service=mock_shopping_cart_service
+                controller,
+                authorized_to=mock_authorized_to,
+                shopping_cart_service=mock_shopping_cart_service
         ) as mocks:
             self.assertEqual(item, controller.create(schema))
 
@@ -102,10 +101,10 @@ class ItemsControllerIntegrationTest(TestCase):
         mock_shopping_cart_service.update_quantity = MagicMock(return_value=item)
 
         with patch.multiple(
-            controller,
-            get_object=MagicMock(return_value=item),
-            authorized_to=mock_authorized_to,
-            shopping_cart_service=mock_shopping_cart_service
+                controller,
+                get_object=MagicMock(return_value=item),
+                authorized_to=mock_authorized_to,
+                shopping_cart_service=mock_shopping_cart_service
         ) as mocks:
             self.assertEqual(item, controller.partial_update(item.id, schema))
 
@@ -128,10 +127,10 @@ class ItemsControllerIntegrationTest(TestCase):
         mock_shopping_cart_service.update_quantity = MagicMock(return_value=None)
 
         with patch.multiple(
-            controller,
-            get_object=MagicMock(return_value=item),
-            authorized_to=mock_authorized_to,
-            shopping_cart_service=mock_shopping_cart_service
+                controller,
+                get_object=MagicMock(return_value=item),
+                authorized_to=mock_authorized_to,
+                shopping_cart_service=mock_shopping_cart_service
         ) as mocks:
             self.assertIsNone(controller.delete(item.id))
 

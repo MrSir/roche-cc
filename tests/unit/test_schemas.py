@@ -3,7 +3,8 @@ from unittest import TestCase
 
 from pydantic import BaseModel
 
-from api.schemas import ItemBaseSchema, UserSchema, ProductSchema, ShoppingCartSchema, ItemCreateSchema, ItemPartialUpdateSchema, ItemSchema
+from api.schemas import ItemBaseSchema, UserSchema, ProductSchema, ShoppingCartSchema, ItemCreateSchema, \
+    ItemPartialUpdateSchema, ItemSchema
 
 
 class UserUnitTest(TestCase):

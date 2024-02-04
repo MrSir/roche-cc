@@ -29,4 +29,3 @@ class NullableValidationErrorUnitTest(TestCase):
         exception = NullableValidationError()
 
         self.assertIsInstance(exception, ValueError)
-

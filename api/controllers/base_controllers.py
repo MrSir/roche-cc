@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import cached_property
 from typing import Self, Type
 
 from sqlalchemy.orm import Session
@@ -60,4 +59,3 @@ class ResourcefulController:
             raise ObjectNotFoundError()
 
         return object_instance
-

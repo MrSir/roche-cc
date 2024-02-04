@@ -13,9 +13,9 @@ class ReserveItemJobIntegrationTest(TestCase):
         mock_update_item = MagicMock(return_value=None)
 
         with patch.multiple(
-            job,
-            reserve_item=MagicMock(return_value=reservation_identifier),
-            update_item=mock_update_item
+                job,
+                reserve_item=MagicMock(return_value=reservation_identifier),
+                update_item=mock_update_item
         ) as mocks:
             job.handle()
 
@@ -31,9 +31,9 @@ class ReleaseReservedItemJobIntegrationTest(TestCase):
         job = ReleaseReservedItemJob(item_id)
 
         with patch.multiple(
-            job,
-            release_reserved_item=MagicMock(return_value=None),
-            delete_item=MagicMock(return_value=None)
+                job,
+                release_reserved_item=MagicMock(return_value=None),
+                delete_item=MagicMock(return_value=None)
         ) as mocks:
             job.handle()
 

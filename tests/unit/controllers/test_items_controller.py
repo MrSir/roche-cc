@@ -38,4 +38,3 @@ class ItemsControllerUnitTest(TestCase):
         self.assertEqual({'DELETE'}, controller.router.routes[3].methods)
 
         self.assertIsInstance(controller.shopping_cart_service, ShoppingCartService)
-

@@ -97,4 +97,3 @@ class ResourcefulControllerUnitTest(TestCase):
             mock_db_session.query.assert_called_once_with(Item)
             mock_query.filter.assert_called_once()
             mock_query.first.assert_called_once()
-
