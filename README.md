@@ -28,6 +28,9 @@ The code is organized into modules that clearly describe what is contained withi
 ## Architecture
 
 ```mermaid
+---
+title: Entity Relationship Diagram
+---
 erDiagram
     User {
         int id
