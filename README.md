@@ -27,10 +27,17 @@ The code is organized into modules that clearly describe what is contained withi
 
 ## Architecture
 ```mermaid
-graph ERD;
-    User-->ShoppingCart
-    ShoppingCart-->Item
-    Item-->Product
+---
+title: Entity Relationship Diagram
+---
+erDiagram
+    User ||--|| ShoppingCart
+    User {
+        int id
+        string email
+        string hashed_password
+        bool is_active
+    }
 ```
 
 ## Mechanisms NOT Implemented
