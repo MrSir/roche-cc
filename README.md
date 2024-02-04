@@ -38,13 +38,16 @@ erDiagram
         string hashed_password
         bool is_active
     }
-    ShoppingCart ||--0{ Item : hasMany
+    ShoppingCart ||--|{ Item : hasMany
     ShoppingCart {
         int id
         int user_id
         datetime expires_at
     }
-    Item ||--|| Product : hasOne
+
+```
+
+#     Item ||--|| Product : hasOne
     Item {
         int id
         int shopping_cart_id
@@ -58,8 +61,6 @@ erDiagram
         bool is_active
         decimal price
     }
-    
-```
 
 ## Mechanisms NOT Implemented
 - Authentication layer for the API is something I didn't bother spending time on. It wasn't mentioned in the requirements, and I figured it is assumed that ANY API would have an authentication layer built for it. So while this component is missing, it should absolutely exist in a production setup
