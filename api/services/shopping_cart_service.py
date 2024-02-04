@@ -4,7 +4,7 @@ import arrow
 from sqlalchemy.orm import Session
 
 from api.database.models import User, ShoppingCart, Item
-from api.jobs.reservation_job import ReserveItemJob, ReleaseReservedItemJob
+from api.jobs.reservation_jobs import ReserveItemJob, ReleaseReservedItemJob
 
 
 class ShoppingCartService:
