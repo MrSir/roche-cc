@@ -26,28 +26,20 @@ The code is organized into modules that clearly describe what is contained withi
 - `tests` - as the name implies this is where the test suite for the api is.
 
 ## Architecture
+
 ```mermaid
----
-title: Entity Relationship Diagram
----
 erDiagram
-    User ||--0| ShoppingCart : hasOne
     User {
         int id
         string email
         string hashed_password
         bool is_active
     }
-    ShoppingCart ||--|{ Item : hasMany
     ShoppingCart {
         int id
         int user_id
         datetime expires_at
     }
-
-```
-
-#     Item ||--|| Product : hasOne
     Item {
         int id
         int shopping_cart_id
@@ -61,6 +53,10 @@ erDiagram
         bool is_active
         decimal price
     }
+    User ||--o| ShoppingCart : hasOne
+    ShoppingCart ||--|{ Item : hasMany
+    Item ||--|| Product : hasOne
+```
 
 ## Mechanisms NOT Implemented
 - Authentication layer for the API is something I didn't bother spending time on. It wasn't mentioned in the requirements, and I figured it is assumed that ANY API would have an authentication layer built for it. So while this component is missing, it should absolutely exist in a production setup
