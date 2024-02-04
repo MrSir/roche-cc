@@ -31,7 +31,7 @@ The code is organized into modules that clearly describe what is contained withi
 title: Entity Relationship Diagram
 ---
 erDiagram
-    User ||--|| ShoppingCart
+    User ||--|| ShoppingCart : has
     User {
         int id
         string email
