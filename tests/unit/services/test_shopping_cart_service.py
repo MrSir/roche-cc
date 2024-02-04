@@ -97,7 +97,7 @@ class ShoppingCartServiceUnitTest(TestCase):
         service = ShoppingCartService(db_session)
 
         with patch.object(service, 'new_expiry', return_value=expires_at) as mock_new_expiry:
-            actual_shopping_cart = service.create_shopping_cart()
+            actual_shopping_cart = service.for_user(user).create_shopping_cart()
 
         mock_new_expiry.assert_called_once()
 

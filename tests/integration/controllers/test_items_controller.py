@@ -7,16 +7,16 @@ from api.schemas import ItemCreateSchema, ItemPartialUpdateSchema
 
 
 class ItemsControllerIntegrationTest(TestCase):
-    @patch('api.controllers.items_controller.ItemsController.db_session', new_callable=PropertyMock())
-    def test_index(self, mock_db_session) -> None:
-
-        controller = ItemsController()
-        controller._user = User(id=1)
-
+    def test_index(self) -> None:
         mock_query = MagicMock()
         mock_query.join = MagicMock(return_value=mock_query)
         mock_query.filter = MagicMock(return_value=mock_query)
+
+        mock_db_session = MagicMock()
         mock_db_session.query = MagicMock(return_value=mock_query)
+
+        controller = ItemsController(mock_db_session)
+        controller._user = User(id=1)
 
         with patch.object(controller, 'authorized_to', return_value=None) as mock_authorized_to:
             controller.index()
@@ -34,17 +34,19 @@ class ItemsControllerIntegrationTest(TestCase):
 
         item = Item(id=1, product_id=product_id, quantity=quantity)
 
-        controller = ItemsController()
+        mock_db_session = MagicMock()
+        controller = ItemsController(mock_db_session)
         schema = ItemCreateSchema(product_id=product_id, quantity=quantity)
 
         mock_authorized_to = MagicMock(return_value=controller)
         mock_shopping_cart_service = MagicMock()
+        mock_shopping_cart_service.for_user = MagicMock(return_value=mock_shopping_cart_service)
         mock_shopping_cart_service.add_item = MagicMock(return_value=item)
 
         with patch.multiple(
-                controller,
-                authorized_to=mock_authorized_to,
-                shopping_cart_service=mock_shopping_cart_service
+            controller,
+            authorized_to=mock_authorized_to,
+            shopping_cart_service=mock_shopping_cart_service
         ) as mocks:
             self.assertEqual(item, controller.create(schema))
 
@@ -52,26 +54,28 @@ class ItemsControllerIntegrationTest(TestCase):
             mock_validator_validate.assert_called_once()
             mock_shopping_cart_service.add_item.assert_called_once_with(product_id, quantity)
 
-    @patch('api.controllers.items_controller.ItemsController.db_session', new_callable=PropertyMock())
     @patch('api.controllers.items_controller.CreateItemValidator.validate')
-    def test_create_resolves_product_id_from_product_name(self, mock_validator_validate, mock_db_session) -> None:
+    def test_create_resolves_product_id_from_product_name(self, mock_validator_validate) -> None:
         product_id = 2
         product_name = 'Computer'
         quantity = 2
 
         item = Item(id=1, product_id=product_id, quantity=quantity)
 
-        controller = ItemsController()
+        mock_query = MagicMock()
+        mock_query.filter = MagicMock(return_value=mock_query)
+        mock_query.first = MagicMock(return_value=Product(id=product_id))
+
+        mock_db_session = MagicMock()
+        mock_db_session.query = MagicMock(return_value=mock_query)
+
+        controller = ItemsController(mock_db_session)
         schema = ItemCreateSchema(product_name=product_name, quantity=quantity)
 
         mock_authorized_to = MagicMock(return_value=controller)
         mock_shopping_cart_service = MagicMock()
+        mock_shopping_cart_service.for_user = MagicMock(return_value=mock_shopping_cart_service)
         mock_shopping_cart_service.add_item = MagicMock(return_value=item)
-
-        mock_query = MagicMock()
-        mock_query.filter = MagicMock(return_value=mock_query)
-        mock_query.first = MagicMock(return_value=Product(id=product_id))
-        mock_db_session.query = MagicMock(return_value=mock_query)
 
         with patch.multiple(
                 controller,
@@ -93,11 +97,13 @@ class ItemsControllerIntegrationTest(TestCase):
         quantity = 2
         item = Item(id=1, product_id=product_id, quantity=quantity)
 
-        controller = ItemsController()
+        mock_db_session = MagicMock()
+        controller = ItemsController(mock_db_session)
         schema = ItemPartialUpdateSchema(quantity=quantity)
 
         mock_authorized_to = MagicMock(return_value=controller)
         mock_shopping_cart_service = MagicMock()
+        mock_shopping_cart_service.for_user = MagicMock(return_value=mock_shopping_cart_service)
         mock_shopping_cart_service.update_quantity = MagicMock(return_value=item)
 
         with patch.multiple(
@@ -120,11 +126,13 @@ class ItemsControllerIntegrationTest(TestCase):
         quantity = 2
         item = Item(id=1, product_id=product_id, quantity=quantity)
 
-        controller = ItemsController()
+        mock_db_session = MagicMock()
+        controller = ItemsController(mock_db_session)
 
         mock_authorized_to = MagicMock(return_value=controller)
         mock_shopping_cart_service = MagicMock()
-        mock_shopping_cart_service.update_quantity = MagicMock(return_value=None)
+        mock_shopping_cart_service.for_user = MagicMock(return_value=mock_shopping_cart_service)
+        mock_shopping_cart_service.remove_item = MagicMock(return_value=None)
 
         with patch.multiple(
                 controller,
@@ -135,7 +143,7 @@ class ItemsControllerIntegrationTest(TestCase):
             self.assertIsNone(controller.delete(item.id))
 
             mock_authorized_to.assert_called_once_with('delete_item')
-            mock_shopping_cart_service.update_quantity.assert_called_once_with(item, 0)
+            mock_shopping_cart_service.remove_item.assert_called_once_with(item)
 
         for mock in mocks:
             mock.assert_called_once()

@@ -14,7 +14,8 @@ class ItemsController(AuthorizedController, ValidatedController, ResourcefulCont
     model_class = Item
 
     def __init__(self, db_session: Session):
-        self.db_session = db_session
+        super().__init__(db_session)
+
         self.shopping_cart_service = ShoppingCartService(self.db_session)
 
         self.router = APIRouter(tags=['Items'])

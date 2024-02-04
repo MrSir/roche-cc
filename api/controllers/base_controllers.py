@@ -2,13 +2,20 @@ from __future__ import annotations
 
 from typing import Self, Type
 
+from sqlalchemy.orm import Session
+
 from api.database.configuration import Base
 from api.database.models import User
 from api.exceptions import ObjectNotFoundError
 from api.validation.base_validators import Validator
 
 
-class AuthenticatedController:
+class DBSessionController:
+    def __init__(self, db_session: Session):
+        self.db_session = db_session
+
+
+class AuthenticatedController(DBSessionController):
     _user: User | None = None
 
     @property
@@ -16,7 +23,6 @@ class AuthenticatedController:
         if self._user is None:
             # TODO: resolves the authenticated user from the request
             self._user = self.db_session.query(User).filter(User.id == 1).first()
-            # self._user =
 
         return self._user
 
@@ -40,7 +46,7 @@ class ValidatedController:
         return self
 
 
-class ResourcefulController:
+class ResourcefulController(DBSessionController):
     model_class: Type[Base]
 
     def get_object(self, identifier: int) -> Base:
